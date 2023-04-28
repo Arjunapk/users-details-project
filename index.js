@@ -9,7 +9,7 @@ const app = express()
 app.use(express.json())
 
 let database = null
-const dbPath = path.join(__dirname, "users.db")
+const dbPath = path.join(__dirname, "user_details.db")
 
 const initializeDBAndServer = async () => {
     try {

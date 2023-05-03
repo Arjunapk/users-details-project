@@ -4,6 +4,7 @@ const {open} = require('sqlite')
 const sqlite3 = require('sqlite3')
 const jwt = require("jsonwebtoken")
 const bcrypt = require('bcrypt')
+const { nextTick } = require('process')
 
 const app = express()
 app.use(express.json())
@@ -27,6 +28,28 @@ const initializeDBAndServer = async () => {
 }
 
 initializeDBAndServer()
+
+const authenticateToken = (request, response, next) => {
+    let jwtToken
+    const authHeader = request.headers.authorization
+    if (authHeader !== undefined) {
+        jwtToken = authHeader.split(" ")[1]
+    }
+    if (jwtToken === undefined) {
+        response.status(401)
+        response.send("Invalid Jwt Token1")
+    } else {
+        jwt.verify(jwtToken, "sdfsdfdsfdfds", async (error, payload) => {
+            console.log(error)
+            console.log(payload)
+            if (error) {
+                response.status(401)
+                response.send("Invalid Jwt Token2")
+            } else {
+                next()
+            }
+        })
+}}
 
 app.post('/signup/', async (request, response) => {
     const {username, password, name, age, gender} = request.body
@@ -54,7 +77,7 @@ app.post('/login/', async (request, response) => {
         const isPasswordMatched = await bcrypt.compare(password, dbUser.password)
         if (isPasswordMatched) {
             const payload = {username: username}
-            const jwtToken = jwt.sign(payload, "Arjun")
+            const jwtToken = jwt.sign(payload, "sdfsdfdsfdfds")
             response.send({jwtToken})
         } else {
             response.status = 400
@@ -63,7 +86,7 @@ app.post('/login/', async (request, response) => {
     }
 })
 
-app.get("/users/", async (request, response) => {
+app.get("/users/", authenticateToken, async (request, response) => {
     const getUsersQuery = `SELECT * FROM users`
     const dbResponse = await database.all(getUsersQuery)
     response.send(dbResponse)

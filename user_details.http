@@ -1,2 +1,23 @@
 GET http://localhost:3003/users/
+Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNjYiIsImlhdCI6MTY4MjgzNzM3M30.E3eT6dT9Py0haB1VDPVbjcFIKcT3vrrRIe8Xa3TiiSc"
 ###
+
+POST http://localhost:3003/signup/
+Content-Type: application/json
+
+{
+    "username": "scb",
+    "password": "1212",
+    "name": "Subash",
+    "age": 23,
+    "gender": "male"
+}
+###
+
+POST http://localhost:3003/login/
+Content-Type: application/json
+
+{
+    "username": "scb",
+    "password": "1212"
+}
